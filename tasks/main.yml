@@ -1,0 +1,24 @@
+---
+- name: Make sure NTP is installed
+  sudo: yes
+  apt: pkg=ntp
+  tags:
+    - build
+    - ntp
+
+
+- name: Make sure NTP is correctly configured in /etc/ntp.conf
+  sudo: yes
+  template: src=ntp.conf dest=/etc/ntp.conf
+  notify:
+    - restart ntp
+  tags:
+    - build
+    - ntp
+
+- name: Make sure NTP is running and enabled
+  sudo: yes
+  service: name=ntp state=running enabled=yes
+  tags:
+    - build
+    - ntp
