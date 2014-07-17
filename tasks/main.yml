@@ -2,10 +2,18 @@
 - name: Make sure NTP is installed
   sudo: yes
   apt: pkg=ntp
+  when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
   tags:
     - build
     - ntp
 
+- name: Make sure NTP is installed
+  sudo: yes
+  yum: name=ntp
+  when: ansible_distribution == 'Redhat' or ansible_distribution == 'CentOS'
+  tags:
+    - build
+    - ntp
 
 - name: Make sure NTP is correctly configured in /etc/ntp.conf
   sudo: yes
@@ -18,7 +26,7 @@
 
 - name: Make sure NTP is running and enabled
   sudo: yes
-  service: name=ntp state=running enabled=yes
+  service: name={% if ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu' %}ntp{% else %}ntpd{% endif %} state=running enabled=yes
   tags:
     - build
     - ntp
